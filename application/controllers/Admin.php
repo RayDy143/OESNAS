@@ -10,12 +10,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		function __construct()
 		{
 			parent::__construct();
-			$this->load->model('UserModel');
+			$this->load->model('UserAccountModel');
 			$this->load->model('DepartmentModel');
 		}
 		function index(){
 			if(isset($_SESSION['Email'])){
-				$data['datas']=$this->UserModel->getAllUsers();
+				$data['datas']=$this->UserAccountModel->getAllUsers();
 				$data['deps']=$this->DepartmentModel->getAllDepartment();
 				$this->load->view("admin_page",$data);
 			}else{
@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 		}
 		public function deleteUser(){
-			$query=$this->UserModel->DeleteUser($this->input->post('UserID'));
+			$query=$this->UserAccountModel->DeleteUser($this->input->post('UserID'));
 			$data['success']=false;
 			if($query){
 				$data['success']=true;
@@ -32,7 +32,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			echo json_encode($data);
 		}
 		public function getAllUsers(){
-			$data=$this->UserModel->getAllUsers();
+			$data=$this->UserAccountModel->getAllUsers();
+			/*$data['success']=false;
+			if($data){
+				$data['success']=true;
+			}*/
+			echo json_encode($data);
+		}
+		public function getUserByType(){
+			$data=$this->UserAccountModel->getUserByType($this->input->post('ID'));
 			/*$data['success']=false;
 			if($data){
 				$data['success']=true;
@@ -40,8 +48,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			echo json_encode($data);
 		}
 		public function AddNewUser(){
-			$datas = array('Email' => $this->input->post('txtEmail'),'DepartmentID' => $this->input->post('cmbDepartment'));
-			$query['data']=$this->UserModel->AddNewUser($datas);
+			$datas = array('Email' => $this->input->post('Email'),'Password'=>$this->input->post('Email'),'DepartmentID' => $this->input->post('cmbDepartment'),'UserTypeID'=>$this->input->post('UserTypeID'));
+			$query['data']=$this->UserAccountModel->AddNewUser($datas);
 			$data['success']=false;
 			if($query['data']){
 				$data['success']=true;

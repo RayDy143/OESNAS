@@ -15,10 +15,13 @@
      <link href="<?php echo base_url(); ?>assets/metro/css/metro.css" rel="stylesheet">
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-icons.css" rel="stylesheet">
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-responsive.css" rel="stylesheet">
+     <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
      <script src="<?php echo base_url(); ?>assets/metro/js/jquery-3.1.1.min.js"></script>
-     <script src="<?php echo base_url(); ?>assets/metro/js/jquery.dataTables.min.js"></script>
+     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/metro/js/metro.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
     <style>
         html, body {
@@ -63,14 +66,54 @@
                                 html +='<tr>'+
                                             '<td>'+response[i].UserID+'</td>'+
                                             '<td>'+response[i].Email+'</td>'+
+                                            '<td>'+response[i].Type+'</td>'+
+                                            '<td>'+response[i].DepartmentName+'</td>'+
                                             '<td>'+response[i].Status+'</td>'+
                                             '<td>'+
                                                 '<div data-role="group" data-group-type="one-state" data-button-style="class"><button class="button primary">EDIT</button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert">DELETE</button></div>'+
                                             '</td>'+
                                         '</tr>';
                             }
+                            if ($.fn.DataTable.isDataTable("#tblUsers")) {
+                              $('#tblUsers').DataTable().clear().destroy();
+                            }
                             $('#tblUsers tbody').html(html);
-                            $('#tblUsers').dataTable();
+                            $('#tblUsers').DataTable();
+                        },
+                        error: function(){
+                            alert('Could not get Data from Database');
+                        }
+                    });
+            }
+        function getUserByType(){
+                    $.ajax({
+                        type: 'ajax',
+                        method:'POST',
+                        url: '<?php echo base_url();?>index.php/Admin/getUserByType',
+                        data:{ID:$("#cmbUserType").val()},
+                        async: false,
+                        dataType: 'json',
+                        success: function(response){
+                            var html = '';
+                            var i;
+                            for(i=0; i<response.length; i++){
+                                gUser=response;
+                                html +='<tr>'+
+                                            '<td>'+response[i].UserID+'</td>'+
+                                            '<td>'+response[i].Email+'</td>'+
+                                            '<td>'+response[i].Type+'</td>'+
+                                            '<td>'+response[i].DepartmentName+'</td>'+
+                                            '<td>'+response[i].Status+'</td>'+
+                                            '<td>'+
+                                                '<div data-role="group" data-group-type="one-state" data-button-style="class"><button class="button primary">EDIT</button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert">DELETE</button></div>'+
+                                            '</td>'+
+                                        '</tr>';
+                            }
+                            if ($.fn.DataTable.isDataTable("#tblUsers")) {
+                              $('#tblUsers').DataTable().clear().destroy();
+                            }
+                            $('#tblUsers tbody').html(html);
+                            $('#tblUsers').DataTable();
                         },
                         error: function(){
                             alert('Could not get Data from Database');
@@ -90,7 +133,7 @@
                 method:'POST',
                 type:'ajax',
                 url:'<?php echo base_url("index.php/Admin/AddNewUser"); ?>',
-                data: $("#frmAddUser").serialize(),
+                data: {Email:$("#txtEmail").val(),cmbDepartment:$("#seDepartment").val(),UserTypeID:$("#cmbUserType").val()},
                 dataType:'json',
                 success:function(response){
                     if(response.success){
@@ -100,7 +143,11 @@
                             type:'success'
                         });
                         metroDialog.close('#NewUserDialog');
-                        getAllUser();
+                        if($("#cmbUserType").val()==""){
+                            getAllUser();
+                        }else{
+                            getUserByType();
+                        }
                     }
                 },
                 error: function()
@@ -113,35 +160,80 @@
                 }
             });
         }
-        $(function(){
+        $(document).ready(function(){
+            $('#tblUsers').DataTable();
+            getAllUser();
+            $("#cmbUserType").change(function(){
+                if($("#cmbUserType").val()==""){
+                    getAllUser();
+                }else{
+                    getUserByType();
+                }
+            });
+            $("#btnNewUser").click(function(){
+                if($("#cmbUserType").val()==""){
+                    $.Notify({
+                        caption: 'Usertype not selected',
+                        content: 'You have to choose a type of user to create a user!',
+                        type:'alert'
+                    });
+                    $('#cmbUserType').select2('open');
+                }else{
+                    metroDialog.open('#NewUserDialog');
+                }
+            });
+            $("#btnImport").click(function(){
+            });
             $("#tblUsers tbody").on("click","button.delete",function(){
                 var _stringId=$(this).attr("id");
                 var _id=_stringId.split('DeleteUser')[1];
                 var _index=gUser.findIndex(i=>i.UserID===_id);
                 var _info=gUser[_index];
-                $.ajax({
-                    method:'POST',
-                    type:'ajax',
-                    url:'<?php echo base_url("index.php/Admin/deleteUser"); ?>',
-                    data: {UserID:_info.UserID},
-                    dataType:'json',
-                    success:function(response){
-                        if(response.success){
-                            $.Notify({
-                                caption: 'Deleting user.',
-                                content: 'Deleting user was been successful',
-                                type:'success'
-                            });
-                            getAllUser();
+                metroDialog.create({
+                    title: "Confirm Deletion",
+                    content: "Warning!This cant be undone!",
+                    actions: [
+                        {
+                            title: "Ok",
+                            onclick: function(el){
+                                $.ajax({
+                                    method:'POST',
+                                    type:'ajax',
+                                    url:'<?php echo base_url("index.php/Admin/deleteUser"); ?>',
+                                    data: {UserID:_info.UserID},
+                                    dataType:'json',
+                                    success:function(response){
+                                        if(response.success){
+                                            $.Notify({
+                                                caption: 'Deleting user.',
+                                                content: 'Deleting user was been successful',
+                                                type:'success'
+                                            });
+                                            getAllUser();
+                                            $(el).data('dialog').close();
+                                        }
+                                    },
+                                    error: function()
+                                    {
+                                        $.Notify({
+                                            caption: 'Adding user.',
+                                            content: 'Adding user was not successful',
+                                            type:'alert'
+                                        });
+                                    }
+                                });
+                               
+                            }
+                        },
+                        {
+                            title: "Cancel",
+                            cls: "js-dialog-close"
                         }
-                    },
-                    error: function()
-                    {
-                        $.Notify({
-                            caption: 'Adding user.',
-                            content: 'Adding user was not successful',
-                            type:'alert'
-                        });
+                    ],
+                    options: { 
+                        type:"alert",
+                        overlay:"true",
+                        overlayColor:"op-dark"
                     }
                 });
             });
@@ -150,10 +242,8 @@
                     $('.sidebar li').removeClass('active');
                     $(this).addClass('active');
                 }
-            })
-            $('#tblUsers').dataTable();
-            getAllUser();
-        })
+            });
+        });
     </script>
 </head>
 <body>
@@ -165,7 +255,7 @@
                   <div class="cell">
                       <label>Enter Email</label>
                       <div class="input-control text full-size">
-                          <input data-validate-hint-position="bottom" type="email" data-validate-hint="Email is required and has to be valid!" data-validate-func="required,email" placeholder="Example:(alfeche492@gmail.com)" name="txtEmail">
+                          <input id="txtEmail" data-validate-hint-position="bottom" type="email" data-validate-hint="Email is required and has to be valid!" data-validate-func="required,email" placeholder="Example:(alfeche492@gmail.com)" name="Email">
                       </div>
                   </div>
               </div>
@@ -173,7 +263,7 @@
                   <div class="cell">
                       <label>Enter Department</label>
                       <div class="input-control text full-size">
-                          <select data-role="select" name="cmbDepartment">
+                          <select id="seDepartment" data-role="select" name="cmbDepartment">
                                 <?php 
                                     foreach ($deps as $key) {
                                         echo "<option value='".$key['DepartmentID']."'>".$key['DepartmentName']."</option>";
@@ -266,14 +356,23 @@
                 <div class="cell auto-size padding20 bg-white" id="cell-content">
                     <h1 class="text-light">User Accounts<span class="mif-user place-right"></span></h1>
                     <hr class="thin bg-grayLighter">
-                    <button class="button primary" onclick="metroDialog.open('#NewUserDialog')"><span class="mif-plus"></span>New User</button>
-                    <button class="button success" onclick="pushMessage('success')"><span class="mif-upload"></span>Import from file</button>
+                    <button class="button primary" id="btnNewUser"><span class="mif-plus"></span>New User</button>
+                    <button class="button success" id="btnImport"><span class="mif-upload"></span>Import from file</button>
+                    <div class="input-control select" data-role="select">
+                        <select id="cmbUserType">
+                            <option value="">All</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Evaluator</option>
+                        </select>
+                    </div>
                     <hr class="thin bg-grayLighter">
                     <table id="tblUsers" class="dataTable border bordered" data-role="datatable" data-auto-width="false">
                         <thead>
                         <tr>
                             <td style="width: 20px">ID</td>
                             <td class="sortable-column">Email</td>
+                            <td class="sortable-column">User Type</td>
+                            <td class="sortable-column">Department</td>
                             <td class="sortable-column">Status</td>
                             <td class="sortable-column" style="width: 220px;">Action</td>
                         </tr>

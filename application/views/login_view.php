@@ -49,13 +49,14 @@
                         if(data.Status=="Verified"){
                             window.location.replace("<?php echo base_url();?>index.php/Admin");
                         }else{
-                            $.Notify({
+                            /*$.Notify({
                                 caption: 'Login failed!',
                                 content: 'It looks like the credendtials you\'ve entered was not verified.',
                                 type: 'alert'
-                            });
+                            });*/
+                           /* window.location.replace("<?php echo base_url();?>index.php/FirstTimeLogin");*/
+                            metroDialog.open('#VerifyDialog');
                         }
-                        
                     }else{
                         $.Notify({
                             caption: 'Login failed!',
@@ -94,7 +95,30 @@
 
 
         $(function(){
-            
+            $('#btnVerify').click(function(){
+                $.ajax({
+                    type: 'ajax',
+                    method:'POST',
+                    url: '<?php echo base_url() ?>index.php/Login/checkCodeValidity',
+                    async: false,
+                    dataType: 'json',
+                    data: {Code:$("#txtCode").val()},
+                    success: function(data){
+                        if(data.success){
+                            window.location.replace("<?php echo base_url();?>index.php/FirstTimeLogin");
+                        }else{
+                            $.Notify({
+                                caption: 'Verification failed!',
+                                content: 'It looks like the credendtials you\'ve entered was not registered.',
+                                type: 'alert'
+                            });
+                        }
+                    },
+                    error: function(){
+                        alert('Could not get Data from Database');
+                    }
+                });
+            });
             var form = $(".login-form");
             
             form.css({
@@ -109,6 +133,25 @@
     </script>
 </head>
 <body class="bg-blue">
+    <div data-role="dialog" data-close-button="true" data-overlay="true" style="padding: 30px;" id="VerifyDialog">
+        <h1>Verify Account</h1>
+            <div class="grid">
+              <form data-hint-mode="line" data-role="validator" action="javascript:void(0)" data-on-error-input="notifyOnErrorInput" method="POST" id="frmAddUser">
+               <div class="row">
+                   <div class="cell">
+                    <h5>We have sent a verification code to your email</h5>
+                       <label>Enter verification code</label>
+                       <div class="input-control text full-size">
+                           <input id="txtCode" data-validate-hint-position="bottom" type="text" data-validate-func="required" name="Code">
+                       </div>
+                   </div>
+               </div>
+               <div class="row">
+                   <button id="btnVerify" type="submit" class="cell button primary">Verify Account</button>
+               </div>
+                  </form>
+            </div>
+    </div>
     <div class="login-form padding20 block-shadow">
         <form action="javascript:void(0)" id="frmLogin" data-on-submit="submitLoginForm" data-role="validator" data-on-error-input="notifyOnErrorInput">
             <h1 class="text-light">Login to OES</h1>
