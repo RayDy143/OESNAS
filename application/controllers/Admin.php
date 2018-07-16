@@ -15,11 +15,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 		function index(){
 			if(isset($_SESSION['Email'])){
-				$data['datas']=$this->UserAccountModel->getAllUsers();
-				$data['deps']=$this->DepartmentModel->getAllDepartment();
-				$this->load->view("admin_page",$data);
+				if($_SESSION['Status']=="Verified"){
+					if($_SESSION['IsFirstLogin']=="1"){
+						header('location:'.base_url('index.php/FirstTimeLogin'));
+					}else{
+						$data['datas']=$this->UserAccountModel->getAllUsers();
+						$data['deps']=$this->DepartmentModel->getAllDepartment();
+						$this->load->view("admin_page",$data);
+					}
+				}else{
+					header('location:'.base_url('index.php/Login'));
+				}
 			}else{
-				header('location:'.base_url());
+				header('location:'.base_url('index.php/Login'));
 			}
 			
 		}

@@ -70,7 +70,7 @@
                                             '<td>'+response[i].DepartmentName+'</td>'+
                                             '<td>'+response[i].Status+'</td>'+
                                             '<td>'+
-                                                '<div data-role="group" data-group-type="one-state" data-button-style="class"><button class="button primary">EDIT</button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert">DELETE</button></div>'+
+                                                '<div data-button-style="class"><button class="button primary"><span class="mif-info"></span></button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert"><span class="mif-bin"></span></button></div>'+
                                             '</td>'+
                                         '</tr>';
                             }
@@ -105,7 +105,7 @@
                                             '<td>'+response[i].DepartmentName+'</td>'+
                                             '<td>'+response[i].Status+'</td>'+
                                             '<td>'+
-                                                '<div data-role="group" data-group-type="one-state" data-button-style="class"><button class="button primary">EDIT</button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert">DELETE</button></div>'+
+                                                '<div data-button-style="class"><button class="button primary"><span class="mif-info"></span></button><button id="DeleteUser'+response[i].UserID+'" class="button delete alert"><span class="mif-bin"></span></button></div>'+
                                             '</td>'+
                                         '</tr>';
                             }
@@ -366,7 +366,7 @@
                         </select>
                     </div>
                     <hr class="thin bg-grayLighter">
-                    <table id="tblUsers" class="dataTable border bordered" data-role="datatable" data-auto-width="false">
+                    <table id="tblUsers" class="dataTable border bordered hovered" data-role="datatable" data-auto-width="false">
                         <thead>
                         <tr>
                             <td style="width: 20px">ID</td>
@@ -374,7 +374,7 @@
                             <td class="sortable-column">User Type</td>
                             <td class="sortable-column">Department</td>
                             <td class="sortable-column">Status</td>
-                            <td class="sortable-column" style="width: 220px;">Action</td>
+                            <td class="sortable-column">Action</td>
                         </tr>
                         </thead>
                         <tbody>

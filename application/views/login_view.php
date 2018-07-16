@@ -133,7 +133,7 @@
     </script>
 </head>
 <body class="bg-blue">
-    <div data-role="dialog" data-close-button="true" data-overlay="true" style="padding: 30px;" id="VerifyDialog">
+    <div data-role="dialog" class="ani-horizontal" data-close-button="true" data-overlay="true" style="padding: 30px;" id="VerifyDialog">
         <h1>Verify Account</h1>
             <div class="grid">
               <form data-hint-mode="line" data-role="validator" action="javascript:void(0)" data-on-error-input="notifyOnErrorInput" method="POST" id="frmAddUser">

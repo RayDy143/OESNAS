@@ -27,6 +27,15 @@
 				return false;
 			}
 		}
+		function FirstTimeLogin($where,$data){
+			$this->db->where($where);
+			$this->db->update('useraccount',$data);
+			if($this->db->affected_rows()>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
 		public function getUserByType($id){
 			$uid=$_SESSION['UserID'];
 			$query=$this->db->query("SELECT * from useraccount inner join usertype on useraccount.UserTypeID=usertype.UserTypeID inner join department on useraccount.DepartmentID=department.DepartmentID where useraccount.Status!='Deleted' and useraccount.UserTypeID='$id' and useraccount.UserID!=$uid");
@@ -69,6 +78,10 @@
 			}else{
 				return false;
 			}
+		}
+		public function ChangePassword($where,$fields){
+			$this->db->where($where);
+			$this->db->update('useraccount',$fields);
 		}
 	}
  ?>

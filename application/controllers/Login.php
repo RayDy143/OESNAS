@@ -15,7 +15,11 @@ class Login extends CI_Controller
 	function index(){
 		if(isset($_SESSION['Email'])){
 			if($_SESSION['Status']=="Verified"){
-				header('location:'.base_url('index.php/Admin'));
+				if($_SESSION['IsFirstLogin']=="1"){
+					header('location:'.base_url('index.php/FirstTimeLogin'));
+				}else{
+					header('location:'.base_url('index.php/Admin'));
+				}
 			}else{
 				$this->load->view('Login_view');
 			}
@@ -41,8 +45,13 @@ class Login extends CI_Controller
 		$this->session->sess_destroy();
 		redirect(base_url());
 	}
+	function codeExpiry(){
+		$where = array('UserID' => $_SESSION['UserID'] );
+		$data = array('Status' => 'Expired' );
+		$this->UserVerificationCodeModel->codeExpiry($where,$data);
+	}
 	function checkCodeValidity(){
-		$fields = array('UserID' => $_SESSION['UserID'],'Code'=>$this->input->post('Code'));
+		$fields = array('UserID' => $_SESSION['UserID'],'Code'=>$this->input->post('Code'),'Status'=>'Active');
 		$datas['data']=$this->UserVerificationCodeModel->CheckCodeValidity($fields);
 		$data['success']=false;
 		if($datas['data']){
@@ -56,17 +65,19 @@ class Login extends CI_Controller
 		$this->UserAccountModel->ValidateAccount($userid);
 	}
 	function SendCode(){
+		$this->codeExpiry();
 		$config = Array(
 		  'protocol' => 'smtp',
 		  'smtp_host' => 'ssl://smtp.googlemail.com',
 		  'smtp_port' => 465,
-		  'smtp_user' => 'alfeche492@gmail.com', // change it to yours
-		  'smtp_pass' => '09058456538', // change it to yours
+		  'smtp_user' => 'alfeche492@gmail.com',
+		  'smtp_pass' => '09058456538',
 		  'mailtype' => 'html',
 		  'charset' => 'iso-8859-1',
 		  'wordwrap' => TRUE
 		);
 		$verifycode = uniqid();
+		$messagecontent='Hello '.$_SESSION['Email'].' Use this code to verify you account. '.$verifycode;
 		$to_email=$_SESSION['Email'];
 		$data = array('Code' => $verifycode,'UserID'=>$_SESSION['UserID'] );
 		$this->UserVerificationCodeModel->InsertCode($data);
@@ -75,8 +86,8 @@ class Login extends CI_Controller
 		$this->email->from('alfeche492@gmail.com', 'Raymundo Alfeche');
 		$this->email->to($to_email);
 
-		$this->email->subject('Kapasar lage ta salig lang');
-		$this->email->message($verifycode);
+		$this->email->subject('Online Evalution System for Non-Academic Scholars Accoutn Verification');
+		$this->email->message($messagecontent);
 
 		$this->email->send();
 	}

@@ -21,6 +21,15 @@
 				return false;
 			}
 		}
+		function codeExpiry($where,$data){
+			$this->db->where($where);
+			$this->db->update('userverificationcode',$data);
+			if($this->db->affected_rows()>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
 
 	}
  ?>

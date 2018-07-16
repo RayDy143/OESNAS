@@ -36,38 +36,37 @@
     </style>
 
     <script>
-        function submitLoginForm(){
-            $.ajax({
-                type: 'ajax',
-                method:'POST',
-                url: '<?php echo base_url() ?>index.php/Login/authenticate',
-                async: false,
-                dataType: 'json',
-                data: $("#frmLogin").serialize(),
-                success: function(data){
-                    if(data.success){
-                        if(data.Status=="Verified"){
-                            window.location.replace("<?php echo base_url();?>index.php/Admin");
+        function submintForm(){
+            if($('#txtPassword').val()==$('#txtConfirmPassword').val()){
+                $.ajax({
+                    type: 'ajax',
+                    method:'POST',
+                    url: '<?php echo base_url() ?>index.php/FirstTimeLogin/InsertInfo',
+                    async: false,
+                    dataType: 'json',
+                    data: $("#frmInfo").serialize(),
+                    success: function(data){
+                        if(data.success){
+                            window.location.replace("<?php echo base_url();?>index.php/Login");
                         }else{
                             $.Notify({
-                                caption: 'Login failed!',
-                                content: 'It looks like the credendtials you\'ve entered was not verified.',
+                                caption: 'Sumbit failed!',
+                                content: 'It looks like it failed.',
                                 type: 'alert'
                             });
                         }
-                        
-                    }else{
-                        $.Notify({
-                            caption: 'Login failed!',
-                            content: 'It looks like the credendtials you\'ve entered was not registered.',
-                            type: 'alert'
-                        });
+                    },
+                    error: function(){
+                        alert('Could not get Data from Database');
                     }
-                },
-                error: function(){
-                    alert('Could not get Data from Database');
-                }
-            });
+                });
+            }else{
+                $.Notify({
+                    caption: 'Error!',
+                    content: 'Password dont match',
+                    type: 'alert'
+                });
+            }
         }
         function notifyOnErrorInput(input){
                 var message = input.data('validateHint');
@@ -102,6 +101,7 @@
 </head>
 <body class="bg-blue" style="padding:30px;">
     <div class="container bg-white padding20 block-shadow">
+        <form action="javascript:void(0)" id="frmInfo" data-role="validator" data-on-submit="submintForm">
         <h4>It seems like it is your first time logging in. You must provide the following information in order to proceed.</h4>
         <div class="example" data-text="">
             <div class="grid">
@@ -109,13 +109,13 @@
                     <div class="cell">
                         <label>First name</label>
                         <div class="input-control text full-size">
-                            <input type="text">
+                            <input name="Firstname" data-validate-hint-position="bottom" data-validate-hint="This field is required" data-validate-func="required" type="text">
                         </div>
                     </div>
                     <div class="cell">
                         <label>Middlename</label>
                         <div class="input-control text full-size">
-                            <input type="text">
+                            <input name="Middlename" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="text" data-validate-func="required">
                         </div>
                     </div>
                 </div>
@@ -123,13 +123,13 @@
                     <div class="cell">
                         <label>Lastname</label>
                         <div class="input-control text full-size">
-                            <input type="text">
+                            <input name="Lastname" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="text" data-validate-func="required">
                         </div>
                     </div>
                     <div class="cell">
                         <h5>Address</h5>
                         <div class="input-control textarea full-size" data-role="input" data-text-auto-resize="true">
-                            <textarea></textarea>
+                            <textarea name="Address" data-validate-hint-position="bottom" data-validate-hint="This field is required" data-validate-func="required"></textarea>
                         </div>
                     </div>
                 </div>
@@ -137,19 +137,19 @@
                     <div class="cell">
                         <h5>Birthdate</h5>
                         <div class="input-control text full-size" data-role="datepicker">
-                            <input type="text">
+                            <input name="Birthdate" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="text" data-validate-func="required">
                             <button class="button"><span class="mif-calendar"></span></button>
                         </div>
                     </div>
                     <div class="cell">
                         <h5>Gender</h5>
                         <label class="input-control radio">
-                            <input name="gender" type="radio">
+                            <input name="Gender" value="Male" checked type="radio">
                             <span class="check"></span>
                             <span class="caption">Male</span>
                         </label>
                         <label class="input-control radio">
-                            <input name="gender" type="radio">
+                            <input name="Gender" value="Female" type="radio">
                             <span class="check"></span>
                             <span class="caption">Female</span>
                         </label>
@@ -159,7 +159,7 @@
                     <div class="cell">
                         <label>Contact Number</label>
                         <div class="input-control number full-size">
-                            <input type="number">
+                            <input name="ContactNumber" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="number" data-validate-func="required">
                         </div>
                     </div>
                 </div>
@@ -172,14 +172,14 @@
                     <div class="cell">
                         <label>Password</label>
                         <div class="input-control password full-size" data-role="input">
-                            <input type="password">
+                            <input id="txtPassword" name="Password" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="password" data-validate-func="required">
                             <button class="button helper-button reveal"><span class="mif-looks"></span></button>
                         </div>
                     </div>
                     <div class="cell">
                         <label>Retype Password</label>
                         <div class="input-control password full-size" data-role="input">
-                            <input type="password">
+                            <input id="txtConfirmPassword" name="ConfirmPassword" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="password" data-validate-func="required">
                             <button class="button helper-button reveal"><span class="mif-looks"></span></button>
                         </div>
                     </div>
@@ -190,8 +190,8 @@
             <div class="row cells4">
                 <div class="cell"></div>
                 <div class="cell"></div>
-                <div class="cell"><button class="button alert full-size">Cancel</button></div>
-                <div class="cell"><button class="button primary full-size">Proceed</button></div>
+                <div class="cell"><a href="<?php echo base_url('index.php/Login/Logout');?>" class="button alert full-size">Cancel</a></div>
+                <div class="cell"><button type="Submit" class="button primary full-size">Proceed</button></div>
             </div>
         </div>
         </form>
