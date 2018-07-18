@@ -10,6 +10,7 @@ class Login extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('UserAccountModel');
+		$this->load->model('UserInfoModel');
 		$this->load->model('UserVerificationCodeModel');
 	}
 	function index(){
@@ -18,7 +19,7 @@ class Login extends CI_Controller
 				if($_SESSION['IsFirstLogin']=="1"){
 					header('location:'.base_url('index.php/FirstTimeLogin'));
 				}else{
-					header('location:'.base_url('index.php/Admin'));
+					header('location:'.base_url('index.php/AdminStart'));
 				}
 			}else{
 				$this->load->view('Login_view');

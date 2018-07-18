@@ -47,7 +47,7 @@
                 success: function(data){
                     if(data.success){
                         if(data.Status=="Verified"){
-                            window.location.replace("<?php echo base_url();?>index.php/Admin");
+                            window.location.replace("<?php echo base_url();?>index.php/AdminStart");
                         }else{
                             /*$.Notify({
                                 caption: 'Login failed!',

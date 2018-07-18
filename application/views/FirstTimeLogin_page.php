@@ -16,6 +16,7 @@
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-icons.css" rel="stylesheet">
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-responsive.css" rel="stylesheet">
 
+     <script src="<?php echo base_url(); ?>assets/metro/js/ga.js"></script>
      <script src="<?php echo base_url(); ?>assets/metro/js/jquery-3.1.1.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/metro/js/metro.js"></script>
  
@@ -38,13 +39,17 @@
     <script>
         function submintForm(){
             if($('#txtPassword').val()==$('#txtConfirmPassword').val()){
+
+                var formData = new FormData( $("#frmInfo")[0] );
                 $.ajax({
                     type: 'ajax',
                     method:'POST',
                     url: '<?php echo base_url() ?>index.php/FirstTimeLogin/InsertInfo',
                     async: false,
                     dataType: 'json',
-                    data: $("#frmInfo").serialize(),
+                    data: formData,
+                    contentType : false,
+                    processData : false,
                     success: function(data){
                         if(data.success){
                             window.location.replace("<?php echo base_url();?>index.php/Login");
@@ -93,15 +98,18 @@
 
 
         $(function(){
-            
+            var formData = new FormData( $("#frmInfo")[0] );
             
         });
         
     </script>
 </head>
 <body class="bg-blue" style="padding:30px;">
+    <div class="app-bar" data-role="appbar">
+        
+    </div>
     <div class="container bg-white padding20 block-shadow">
-        <form action="javascript:void(0)" id="frmInfo" data-role="validator" data-on-submit="submintForm">
+        <form enctype="multi-part/form-data" action="javascript:void(0)" id="frmInfo" data-role="validator" data-on-submit="submintForm">
         <h4>It seems like it is your first time logging in. You must provide the following information in order to proceed.</h4>
         <div class="example" data-text="">
             <div class="grid">
@@ -160,6 +168,13 @@
                         <label>Contact Number</label>
                         <div class="input-control number full-size">
                             <input name="ContactNumber" data-validate-hint-position="bottom" data-validate-hint="This field is required" type="number" data-validate-func="required">
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <label>Choose Profile picture</label>
+                        <div class="input-control file full-size" data-role="input">
+                            <input type="file" data-validate-hint="This field is required" data-validate-func="required" name="ProfilePic">
+                            <button class="button"><span class="mif-folder"></span></button>
                         </div>
                     </div>
                 </div>

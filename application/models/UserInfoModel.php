@@ -17,5 +17,13 @@
 				return false;
 			}
 		}
+		function getUserInfo($id){
+			$query=$this->db->query("Select * from userprofilepicture RIGHT join useraccount on userprofilepicture.UserID=useraccount.UserID INNER join userinfo on useraccount.UserID=userinfo.UserID where useraccount.UserID='$id'");
+			if($query){
+				return $query->result_array();
+			}else{
+				return false;
+			}
+		}
 	}
  ?>
