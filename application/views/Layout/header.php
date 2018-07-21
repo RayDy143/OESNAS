@@ -55,7 +55,7 @@
 <body>
    
     <div class="app-bar red fixed-top" data-role="appbar">
-        <a class="app-bar-element branding">Online Evaluation System Non-Academic Scholars of ACT</a>
+        <a class="app-bar-element branding">Online Evaluation System for Non-Academic Scholars of ACT</a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
             <li><a href="<?php echo base_url('index.php/AdminStart'); ?>">Home</a></li>
@@ -105,24 +105,24 @@
                                 <img src="<?php echo base_url('assets/uploads/ProfilePicture/').$_SESSION['Filename']; ?>">
                             </div>
                             <div class="image-overlay">
-                                <h2>Change Profile</h2>
+                                <h2>Change Picture</h2>
                             </div>
                         </div>
                     </li>
-                    <li><a href="" class="fg-white fg-hover-dark">Profile</a></li>
+                    <li><a href="<?php echo base_url('index.php/MyProfile') ?>" class="fg-white fg-hover-dark">My Profile</a></li>
                     <li><a href="<?php echo base_url('index.php/Login/Logout'); ?>" class="fg-white fg-hover-dark">Logout</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="page-content">
+    <div style="overflow: auto;" class="page-content">
         <div class="flex-grid no-responsive-future" style="height: 100%;">
             <div class="row" style="height: 100%">
-                <div class="cell size-x300" id="cell-sidebar">
+                <div class="cell size-x300" id="cell-sidebar" style="overflow: auto;overflow-x: hidden;">
                     <ul class="sidebar2 dark">
                         <li class="title">Masterfile</li>
                         <li id="sidebarUserAccount"><a href="<?php echo base_url('index.php/UserAccounts'); ?>">User Account</a></li>
-                        <li id="sidebarNAS"><a href="#">NAS</a></li>
+                        <li id="sidebarNAS"><a href="<?php echo base_url('index.php/NAS'); ?>">NAS</a></li>
                         <li>
                             <a class="dropdown-toggle" href="#">Evaluation Components</a>
                             <ul class="d-menu" data-role="dropdown">
@@ -134,7 +134,7 @@
                         <li id="sidebarDepartment"><a href="<?php echo base_url('index.php/ManageDepartment') ?>">Department</a></li>
                         <li><a href="#">Imported Excel Files</a></li>
                         <li><a href="#">NAS Schedule</a></li>
-                        <li><a href="#">My Profile</a></li>
+                        <li><a href="<?php echo base_url('index.php/MyProfile') ?>">My Profile</a></li>
 
                         <li class="title">Reports</li>
                         <li><a href="#">Head Evaluation Result</a></li>

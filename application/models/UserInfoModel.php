@@ -25,5 +25,14 @@
 				return false;
 			}
 		}
+		function editInfo($fields,$where){
+			$this->db->where($where);
+			$this->db->update('userinfo',$fields);
+			if($this->db->affected_rows()>0){
+				return true;
+			}else{
+				return false;
+			}
+		}
 	}
  ?>

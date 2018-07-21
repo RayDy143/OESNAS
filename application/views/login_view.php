@@ -132,7 +132,8 @@
         
     </script>
 </head>
-<body class="bg-blue">
+<body class="bg-dark">
+    <div data-role="appbar"></div>
     <div data-role="dialog" class="ani-horizontal" data-close-button="true" data-overlay="true" style="padding: 30px;" id="VerifyDialog">
         <h1>Verify Account</h1>
             <div class="grid">

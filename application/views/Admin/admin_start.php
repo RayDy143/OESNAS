@@ -9,11 +9,13 @@
     <meta name="author" content="Sergey Pimenov and Metro UI CSS contributors">
 
     <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
-    <title>Tiles examples :: Start Screen :: Metro UI CSS - The front-end framework for developing projects on the web in Windows Metro Style</title>
+    <title>OES-Admin Dashboard</title>
 
     <link href="<?php echo base_url(); ?>assets/metro/css/metro.css" rel="stylesheet">
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-icons.css" rel="stylesheet">
      <link href="<?php echo base_url(); ?>assets/metro/css/metro-responsive.css" rel="stylesheet">
+     <link href="<?php echo base_url(); ?>assets/metro/css/metro-schemes.css" rel="stylesheet">
+     <link href="<?php echo base_url(); ?>assets/metro/css/metro-colors.css" rel="stylesheet">
 
      <script src="<?php echo base_url(); ?>assets/metro/js/jquery-3.1.1.min.js"></script>
      <script src="<?php echo base_url(); ?>assets/metro/js/metro.js"></script>
@@ -84,6 +86,31 @@
     </script>
 
     <script>
+        function ShowDialog(){
+            metroDialog.create({
+                title: "Logout?",
+                content: "Are you sure you want to logout?",
+                actions: [
+                    {
+                        title: "Ok",
+                        onclick: function(el){
+                            $(el).data('dialog').close();
+                            window.location.replace('<?php echo base_url("index.php/Login/Logout"); ?>')
+
+                        }
+                    },
+                    {
+                        title: "Cancel",
+                        cls: "js-dialog-close"
+                    }
+                ],
+                options: {
+                    overlay:"true",
+                    type:"alert"
+                }
+            });
+
+        }
         (function($) {
             $.StartScreen = function(){
                 var plugin = this;
@@ -121,8 +148,8 @@
                 plugin.init();
             }
         })(jQuery);
-
         $(function(){
+
             $.StartScreen();
 
             var tiles = $(".tile, .tile-small, .tile-sqaure, .tile-wide, .tile-large, .tile-big, .tile-super");
@@ -251,6 +278,7 @@
 
 </head>
 <body style="overflow-y: hidden;">
+    <div data-role="appbar"></div>
     <div data-role="charm" id="charmSearch">
         <h1 class="text-light">Search</h1>
         <hr class="thin"/>
@@ -302,10 +330,10 @@
     <div class="tile-area tile-area-scheme-dark fg-white" style="height: 100%; max-height: 100% !important;">
         <h1 class="tile-area-title">Admin-Start</h1>
         <div class="tile-area-controls">
-            <button class="image-button icon-right bg-transparent fg-dark bg-hover-dark no-border"><span class="sub-header no-margin text-dark"><?php echo $_SESSION['Firstname'].' '.$_SESSION['Lastname']; ?></span> <span class="icon mif-user"></span></button>
-            <button class="square-button bg-transparent fg-dark bg-hover-dark no-border" onclick="showCharms('#charmSearch')"><span class="mif-search"></span></button>
-            <button class="square-button bg-transparent fg-dark bg-hover-dark no-border" onclick="showCharms('#charmSettings')"><span class="mif-cog"></span></button>
-            <a href="<?php echo base_url('index.php/Login/Logout'); ?>" class="square-button bg-transparent fg-dark bg-hover-dark no-border"><span class="mif-switch"></span></a>
+            <a href="<?php echo base_url('index.php/MyProfile') ?>" class="image-button icon-right bg-transparent fg-dark bg-hover-red no-border"><span class="sub-header no-margin text-dark"><?php echo $_SESSION['Firstname'].' '.$_SESSION['Lastname']; ?></span> <span class="icon mif-user"></span></a>
+            <button class="square-button bg-transparent fg-dark bg-hover-red no-border" onclick="showCharms('#charmSearch')"><span class="mif-search"></span></button>
+            <button class="square-button bg-transparent fg-dark bg-hover-red no-border" onclick="showCharms('#charmSettings')"><span class="mif-cog"></span></button>
+            <a href="#" onclick="ShowDialog()" class="square-button bg-transparent fg-dark bg-hover-red no-border"><span class="mif-switch"></span></a>
         </div>
 
         <div class="tile-group double">
@@ -320,7 +348,7 @@
                     <span class="tile-label">User Accounts</span>
                 </a>
 
-                <div class="tile bg-darkBlue fg-white" data-role="tile" onclick="document.location.href='http://gmail.com'">
+                <div class="tile bg-darkBlue fg-white" data-role="tile" onclick="document.location.href='<?php echo base_url(); ?>index.php/NAS'">
                     <div class="tile-content iconic">
                         <span class="icon"></span>
                     </div>

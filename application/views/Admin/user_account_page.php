@@ -1,8 +1,9 @@
 
                 <div class="cell auto-size padding20 bg-white" id="cell-content">
+                    <a href="javascript:history.back()" class="button bg-red fg-white" href=""><span class="mif-arrow-left mif-lg"></span> Go Back</a>
                     <ul class="breadcrumbs2">
-                        <li><a href="#"><span class="icon mif-home"></span></a></li>
-                        <li class="page-item"><a href="#" class="page-link">Masterfile</a></li>
+                        <li><a href="<?php echo base_url('index.php/AdminStart'); ?>"><span class="icon mif-home"></span></a></li>
+                        <li class="page-item"><a href="<?php echo base_url('index.php/AdminMasterfile');?>" class="page-link">Masterfile</a></li>
                         <li class="page-item"><a href="#" class="page-link">User Accounts</a></li>
                     </ul>
                     <h1 class="text-light">User Accounts<span class="mif-user place-right"></span></h1>
@@ -159,8 +160,8 @@
                                 success: function(response){
                                     var html = '';
                                     var i;
+                                    gUser=response;
                                     for(i=0; i<response.length; i++){
-                                        gUser=response;
                                         html +='<tr>'+
                                                     '<td>'+response[i].UserID+'</td>'+
                                                     '<td>'+response[i].Email+'</td>'+
@@ -194,8 +195,8 @@
                                 success: function(response){
                                     var html = '';
                                     var i;
+                                    gUser=response;
                                     for(i=0; i<response.length; i++){
-                                        gUser=response;
                                         html +='<tr>'+
                                                     '<td>'+response[i].UserID+'</td>'+
                                                     '<td>'+response[i].Email+'</td>'+

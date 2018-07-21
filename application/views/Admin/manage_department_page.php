@@ -1,7 +1,8 @@
 
-                <div class="cell auto-size padding20 bg-white" id="cell-content">
+                <div class="cell auto-size padding20 bg-white" style="overflow: auto;" id="cell-content">
+                    <a href="javascript:history.back()" class="button bg-red fg-white" href=""><span class="mif-arrow-left mif-lg"></span> Go Back</a>
                     <ul class="breadcrumbs2">
-                        <li><a href="#"><span class="icon mif-home"></span></a></li>
+                        <li><a href="<?php echo base_url('index.php/AdminStart'); ?>"><span class="icon mif-home"></span></a></li>
                         <li class="page-item"><a href="#" class="page-link">Manage</a></li>
                         <li class="page-item"><a href="#" class="page-link">Department</a></li>
                     </ul>
@@ -28,7 +29,7 @@
     <div data-role="dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" class="padding20" id="AddDepartmentDialog">
         <h3>Add new department</h3>
         <div class="example">
-            <form id="frmDepartment" data-on-submit="AddDepartmentSubmit" data-on-error-input="notifyOnErrorInput" data-role="validator" method="POST" action="javascript:void(0)">
+            <form id="frmDepartment" data-on-submit="AddDepartmentSubmit" data-role="validator" method="POST" action="javascript:void(0)">
                 <div class="grid">
                     <div class="row">
                         <label>Department</label>
@@ -65,6 +66,7 @@
         </div>
     </div>
     <script type="text/javascript">
+        var gDeparment=[];
         function AddDepartmentSubmit(){
             $.ajax({
                 type:'ajax',
@@ -76,6 +78,11 @@
                 success: function(response){
                         getAllDepartment();
                         metroDialog.close("#AddDepartmentDialog");
+                        $.Notify({
+                            caption: 'Success',
+                            content: "Add of Department has been successful",
+                            type: 'Success'
+                        });
                 },
                 error:function(){
                     $.Notify({
@@ -83,6 +90,24 @@
                         content: "Add of Department has encountered an error",
                         type: 'alert'
                     });
+                }
+            });
+        }
+        function EditDepartmentSubmit(){
+            $.ajax({
+                type:'ajax',
+                method:'POST',
+                url:'<?php echo base_url("index.php/ManageDepartment/AddDepartment") ?>',
+                async:false,
+                dataType:'json',
+                data:$("#frmDepartment").serialize(),
+                success: function(response){
+                    if(response.data){
+                        metroDialog.close("#AddDepartmentDialog");
+                    }
+                },
+                error:function(){
+
                 }
             });
         }
@@ -119,7 +144,6 @@
         }
                 $(document).ready(function(){
 
-                    var gDeparment=[];
                     $('#tblDepartment').DataTable();
                     $("#sidebarDepartment").attr('class','active');
                     getAllDepartment();
@@ -130,25 +154,6 @@
                                 content: message,
                                 type: 'alert'
                             });
-                    }
-                    
-                    function EditDepartmentSubmit(){
-                        $.ajax({
-                            type:'ajax',
-                            method:'POST',
-                            url:'<?php echo base_url("index.php/ManageDepartment/AddDepartment") ?>',
-                            async:false,
-                            dataType:'json',
-                            data:$("#frmDepartment").serialize(),
-                            success: function(response){
-                                if(response.data){
-                                    metroDialog.close("#AddDepartmentDialog");
-                                }
-                            },
-                            error:function(){
-
-                            }
-                        });
                     }
                     
                     $("#tblDepartment tbody").on("click","button.delete",function(){
@@ -209,13 +214,9 @@
                         var _id=_stringId.split('EditDepartment')[1];
                         var _index=gDeparment.findIndex(i=>i.DepartmentID===_id);
                         var _info=gDeparment[_index];
-                        if(_info.Department==""){
-                            //alert('User has not verified yet!');
-                        }else{
-                            $('#txtDepartmentID').val(_info.DepartmentID);
-                            $('#txtEditDepartment').val(_info.Department);
-                            metroDialog.open('#EditDepartmentDialog');
-                        }
+                        $('#txtDepartmentID').val(_info.DepartmentID);
+                        $('#txtEditDepartment').val(_info.DepartmentName);
+                        metroDialog.open('#EditDepartmentDialog');
                         
                     });
                     $('.sidebar').on('click', 'li', function(){
